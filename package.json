@@ -1,0 +1,44 @@
+{
+  "name": "cvlint",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Open-source, privacy-first resume builder and ATS checker (English & Portuguese).",
+  "license": "MIT",
+  "author": "Bernardo Righi (https://righi.dev)",
+  "homepage": "https://righi.dev",
+  "type": "module",
+  "engines": {
+    "node": "24.x"
+  },
+  "scripts": {
+    "dev": "node scripts/copy-pdf-worker.mjs && next dev",
+    "build": "node scripts/copy-pdf-worker.mjs && next build",
+    "start": "next start",
+    "lint": "eslint . --max-warnings=0",
+    "typecheck": "next typegen && tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "test:e2e": "playwright test",
+    "check": "npm run lint && npm run typecheck && npm run test"
+  },
+  "dependencies": {
+    "fflate": "0.8.3",
+    "next": "16.3.6",
+    "pdfjs-dist": "6.3.289",
+    "react": "19.3.0",
+    "react-dom": "19.3.0",
+    "zod": "4.6.5"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.63.0",
+    "@types/node": "24.13.6",
+    "@types/react": "19.3.0",
+    "@types/react-dom": "19.3.0",
+    "@vitest/coverage-v8": "5.0.1",
+    "eslint": "9.39.5",
+    "eslint-config-next": "16.3.6",
+    "typescript": "6.0.3",
+    "vitest": "5.0.1"
+  }
+}

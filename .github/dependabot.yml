@@ -1,0 +1,22 @@
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+    # Let fresh releases age a few days: most hijacked packages are pulled quickly.
+    cooldown:
+      default-days: 5
+    open-pull-requests-limit: 10
+    groups:
+      framework:
+        patterns: ["next", "react", "react-dom", "eslint-config-next", "@types/react", "@types/react-dom"]
+      tooling:
+        dependency-type: development
+        exclude-patterns: ["eslint-config-next", "@types/react", "@types/react-dom"]
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+    cooldown:
+      default-days: 5
