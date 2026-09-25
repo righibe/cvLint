@@ -77,7 +77,7 @@ docker compose up -d --build
 ```
 
 Caddy terminates HTTPS automatically; the app container runs as non-root on a read-only filesystem with no internet
-access. Full guide: [docs/DEPLOY.md](docs/DEPLOY.md).
+access. Point the domain's DNS `A` record to the server and open ports 80 and 443.
 
 ## Contributing
 
@@ -118,7 +118,7 @@ npm run build && npm run test:e2e
 ### Deploy (VPS + Docker)
 
 Copie `.env.example` para `.env`, ajuste o domínio e rode `docker compose up -d --build`. O Caddy cuida do HTTPS
-automaticamente. Guia completo: [docs/DEPLOY.md](docs/DEPLOY.md).
+automaticamente. Aponte o registro `A` do domínio para o servidor e libere as portas 80 e 443.
 
 ### Segurança
 
