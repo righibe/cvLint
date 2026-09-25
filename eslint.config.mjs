@@ -5,7 +5,8 @@ const config = [
   ...nextVitals,
   ...nextTs,
   {
-    ignores: [".next/**", "out/**", "coverage/**", "public/**", "playwright-report/**", "test-results/**", "next-env.d.ts"],
+    // Dot-folders (build output, tooling, local add-ons) are never app source.
+    ignores: [".*/**", "out/**", "coverage/**", "public/**", "playwright-report/**", "test-results/**", "next-env.d.ts"],
   },
   {
     rules: {
