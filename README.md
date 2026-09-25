@@ -3,7 +3,7 @@
 A linter for your resume. Made by [Bernardo Righi](https://righi.dev).
 
 Open-source, privacy-first **resume builder + ATS checker**, in **English and Portuguese**.
-Everything runs in the browser: no backend, no database, no AI tokens, no tracking. Deploys to Vercel's free tier.
+Everything runs in the browser: no database, no AI tokens, no tracking. Self-hosted with Docker on a small VPS.
 
 > 🇧🇷 [Leia em português](#português)
 
@@ -69,12 +69,15 @@ npm run check        # lint + typecheck + unit tests
 npm run build && npm run test:e2e   # Playwright (run `npx playwright install chromium` once)
 ```
 
-## Deploy to Vercel
+## Deploy (VPS + Docker)
 
-1. Push the repository to GitHub and import it in Vercel (framework preset: Next.js). No environment variables are required.
-2. Optional: set `NEXT_PUBLIC_SITE_URL` (e.g. `https://cvlint.example.com`) for canonical URLs, sitemap and robots.
+```bash
+cp .env.example .env   # set SITE_DOMAIN and NEXT_PUBLIC_SITE_URL
+docker compose up -d --build
+```
 
-The build runs `scripts/copy-pdf-worker.mjs` automatically to serve the PDF.js worker from your own origin.
+Caddy terminates HTTPS automatically; the app container runs as non-root on a read-only filesystem with no internet
+access. Full guide: [docs/DEPLOY.md](docs/DEPLOY.md).
 
 ## Contributing
 
@@ -93,7 +96,7 @@ Built by **Bernardo Righi** — portfolio: [righi.dev](https://righi.dev).
 ## Português
 
 **Gerador de currículo + verificador ATS** open source e privado, em **português e inglês**. Tudo roda no navegador:
-sem backend, sem banco de dados, sem tokens de IA, sem rastreamento. Hospeda de graça na Vercel.
+sem banco de dados, sem tokens de IA, sem rastreamento. Roda com Docker numa VPS pequena.
 
 ### O que faz
 
@@ -112,10 +115,10 @@ npm run check        # lint + tipos + testes unitários
 npm run build && npm run test:e2e
 ```
 
-### Deploy na Vercel
+### Deploy (VPS + Docker)
 
-Suba o repositório para o GitHub e importe na Vercel (preset Next.js). Nenhuma variável de ambiente é obrigatória;
-`NEXT_PUBLIC_SITE_URL` é opcional para URLs canônicas e sitemap.
+Copie `.env.example` para `.env`, ajuste o domínio e rode `docker compose up -d --build`. O Caddy cuida do HTTPS
+automaticamente. Guia completo: [docs/DEPLOY.md](docs/DEPLOY.md).
 
 ### Segurança
 
