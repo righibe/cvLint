@@ -13,7 +13,7 @@
   "scripts": {
     "dev": "node scripts/copy-pdf-worker.mjs && next dev",
     "build": "node scripts/copy-pdf-worker.mjs && next build",
-    "start": "next start",
+    "start": "node scripts/start-standalone.mjs",
     "lint": "eslint . --max-warnings=0",
     "typecheck": "next typegen && tsc --noEmit",
     "test": "vitest run",
