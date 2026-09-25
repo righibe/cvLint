@@ -2,6 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { isLocale } from "@/i18n/config";
 import { getDictionary } from "@/i18n/get-dictionary";
+import { REPO_URL } from "@/lib/site";
 
 export default async function HomePage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
@@ -22,6 +23,11 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
             {home.ctaBuilder}
           </Link>
         </div>
+        <p className="star-note">
+          <a href={REPO_URL} rel="noopener noreferrer" target="_blank">
+            ★ {home.star} →
+          </a>
+        </p>
       </section>
 
       <div className="points">

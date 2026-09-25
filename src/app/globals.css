@@ -399,6 +399,20 @@ textarea {
   max-width: 560px;
 }
 
+.star-note {
+  margin: 20px 0 0;
+  font-size: 0.85rem;
+}
+
+.star-note a {
+  color: var(--muted);
+  text-decoration: none;
+}
+
+.star-note a:hover {
+  color: var(--accent);
+}
+
 .points {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));

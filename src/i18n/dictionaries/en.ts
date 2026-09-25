@@ -96,6 +96,7 @@ export const en = {
   },
   footer: {
     left: "cvlint · open source (MIT)",
+    github: "GitHub",
     madeBy: "Made by",
   },
   home: {
@@ -104,6 +105,7 @@ export const en = {
     subtitle: "See what an ATS actually reads in your resume and fix it before you apply.",
     ctaChecker: "Check a resume",
     ctaBuilder: "Build a resume",
+    star: "Open source. If it helped you, leave a star on GitHub",
     points: [
       { title: "Check", text: "Extracted text, layout traps, sections and the keywords the job asks for." },
       { title: "Build", text: "A single-column, text-only resume that every parser reads. Print to PDF." },

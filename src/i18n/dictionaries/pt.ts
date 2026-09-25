@@ -99,6 +99,7 @@ export const pt: Dictionary = {
   },
   footer: {
     left: "cvlint · open source (MIT)",
+    github: "GitHub",
     madeBy: "Feito por",
   },
   home: {
@@ -107,6 +108,7 @@ export const pt: Dictionary = {
     subtitle: "Veja o que um ATS realmente lê no seu currículo e corrija antes de se candidatar.",
     ctaChecker: "Verificar currículo",
     ctaBuilder: "Montar currículo",
+    star: "É open source. Se te ajudou, deixa uma estrela no GitHub",
     points: [
       { title: "Verificar", text: "Texto extraído, armadilhas de layout, seções e as palavras-chave que a vaga pede." },
       { title: "Montar", text: "Currículo de coluna única, só texto, que qualquer parser lê. Salva em PDF." },
