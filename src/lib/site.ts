@@ -1,8 +1,8 @@
-/** Canonical site origin, used for metadata, robots and sitemap. */
+/**
+ * Canonical site origin, used for metadata, robots and sitemap. NEXT_PUBLIC_* values
+ * are inlined at build time, so it is passed as a Docker build argument.
+ */
 export function siteUrl(): URL {
   const explicit = process.env.NEXT_PUBLIC_SITE_URL;
-  if (explicit) return new URL(explicit);
-  const vercel = process.env.VERCEL_PROJECT_PRODUCTION_URL;
-  if (vercel) return new URL(`https://${vercel}`);
-  return new URL("http://localhost:3000");
+  return new URL(explicit || "http://localhost:3000");
 }

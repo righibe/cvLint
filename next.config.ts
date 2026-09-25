@@ -23,6 +23,8 @@ const securityHeaders = [
 const pdfWorkerCsp = "default-src 'none'; script-src 'self'; worker-src 'none'; connect-src 'none'; base-uri 'none'";
 
 const nextConfig: NextConfig = {
+  // Self-contained server bundle (server.js + minimal node_modules) for the Docker image.
+  output: "standalone",
   poweredByHeader: false,
   reactStrictMode: true,
   productionBrowserSourceMaps: false,
