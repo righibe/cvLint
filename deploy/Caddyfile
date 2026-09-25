@@ -1,0 +1,22 @@
+# Reverse proxy with automatic HTTPS (Let's Encrypt). Security headers and the CSP
+# come from the app itself, so they are identical in development and production.
+{
+	servers {
+		protocols h1 h2 h3
+	}
+}
+
+{$SITE_DOMAIN} {
+	encode zstd gzip
+
+	reverse_proxy web:3000 {
+		header_down -Server
+	}
+
+	header -Server
+
+	log {
+		output stdout
+		format console
+	}
+}
