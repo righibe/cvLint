@@ -108,7 +108,7 @@ describe("contact: phone false positives", () => {
     expect(isPhoneCandidate(s)).toBe(false);
   });
 
-  it.each(["(51) 99601-1501", "51 99601-1501", "+55 11 91234-5678", "555-123-4567", "+1 555 123 4567"])("%s is a phone", (s) => {
+  it.each(["(21) 98765-4321", "21 98765-4321", "+55 11 91234-5678", "555-123-4567", "+1 555 123 4567"])("%s is a phone", (s) => {
     expect(isPhoneCandidate(s)).toBe(true);
   });
 
