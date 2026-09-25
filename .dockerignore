@@ -1,0 +1,20 @@
+# Keep the build context small and free of secrets.
+.git
+.github
+.next
+node_modules
+coverage
+playwright-report
+test-results
+blob-report
+public/pdfjs
+.env
+.env.*
+!.env.example
+*.pem
+*.log
+*.tsbuildinfo
+next-env.d.ts
+Dockerfile
+compose.yaml
+deploy
