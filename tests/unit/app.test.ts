@@ -4,6 +4,7 @@ import { isLocale, negotiateLocale } from "@/i18n/config";
 import { en } from "@/i18n/dictionaries/en";
 import { pt } from "@/i18n/dictionaries/pt";
 import { getDictionary } from "@/i18n/get-dictionary";
+import { scoreBand } from "@/lib/ats/band";
 import { FINDING_IDS } from "@/lib/ats/types";
 import { PARSE_ERROR_CODES } from "@/lib/parser/errors";
 import { buildCsp, createNonce } from "@/lib/security/csp";
@@ -84,6 +85,14 @@ describe("formatFinding", () => {
 
   it("leaves missing parameters empty", () => {
     expect(formatFinding({ id: "text.short", severity: "warning", category: "parseability" }, en)).toContain("Only  words");
+  });
+});
+
+describe("scoreBand", () => {
+  it("maps scores to bands at the documented thresholds", () => {
+    expect([100, 85, 84, 70, 69, 50, 49, 0].map(scoreBand)).toEqual([
+      "excellent", "excellent", "good", "good", "fair", "fair", "poor", "poor",
+    ]);
   });
 });
 

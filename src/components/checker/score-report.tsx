@@ -1,19 +1,9 @@
-import type { AnalysisResult, Category, Finding, Severity } from "@/lib/ats/types";
+import { CATEGORY_ORDER, scoreBand } from "@/lib/ats/band";
+import type { AnalysisResult, Finding, Severity } from "@/lib/ats/types";
 import type { Dictionary } from "@/i18n/dictionaries/en";
 import { formatFinding } from "./format-finding";
 
 type ReportDict = Pick<Dictionary, "report" | "findings" | "sectionNames" | "languages">;
-
-const CATEGORY_ORDER: Category[] = ["keywords", "parseability", "sections", "content", "contact"];
-
-export type Band = "excellent" | "good" | "fair" | "poor";
-
-export function scoreBand(score: number): Band {
-  if (score >= 85) return "excellent";
-  if (score >= 70) return "good";
-  if (score >= 50) return "fair";
-  return "poor";
-}
 
 const SEVERITY_CLASS: Record<Severity, string> = {
   critical: "badge badge-critical",
