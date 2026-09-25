@@ -1,0 +1,37 @@
+name: Bug report / Relatar um bug
+description: Something is wrong or the score looks off / Algo está errado ou a nota parece estranha
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        **Never attach a real resume.** Describe the problem or paste a short fictional example.
+        **Nunca anexe um currículo real.** Descreva o problema ou cole um exemplo fictício curto.
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened? / O que aconteceu?
+      placeholder: The heading "Experiência" was not recognized...
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: What did you expect? / O que você esperava?
+    validations:
+      required: true
+  - type: textarea
+    id: sample
+    attributes:
+      label: Fictional sample text (optional) / Texto de exemplo fictício (opcional)
+      render: text
+  - type: dropdown
+    id: where
+    attributes:
+      label: Where? / Onde?
+      options:
+        - Website / Site
+        - Discord bot
+        - Self-hosted
+    validations:
+      required: true

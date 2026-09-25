@@ -1,0 +1,16 @@
+name: Feature request / Sugerir uma funcionalidade
+description: An idea to make cvlint more useful / Uma ideia para deixar o cvlint mais útil
+labels: ["enhancement"]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: What problem does it solve? / Que problema isso resolve?
+    validations:
+      required: true
+  - type: textarea
+    id: idea
+    attributes:
+      label: Your idea / Sua ideia
+    validations:
+      required: true

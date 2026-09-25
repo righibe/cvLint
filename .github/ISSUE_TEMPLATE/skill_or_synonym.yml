@@ -1,0 +1,31 @@
+name: Suggest a skill, synonym or verb / Sugerir skill, sinônimo ou verbo
+description: A technology, section heading or action verb cvlint should recognize / Algo que o cvlint deveria reconhecer
+labels: ["lexicon", "good first issue"]
+body:
+  - type: dropdown
+    id: kind
+    attributes:
+      label: Type / Tipo
+      options:
+        - Skill / technology
+        - Section heading synonym / Sinônimo de título de seção
+        - Action verb / Verbo de ação
+    validations:
+      required: true
+  - type: input
+    id: term
+    attributes:
+      label: Term / Termo
+      placeholder: "Flutter"
+    validations:
+      required: true
+  - type: input
+    id: aliases
+    attributes:
+      label: Other spellings, EN and PT / Outras grafias, EN e PT
+      placeholder: "flutter sdk"
+  - type: textarea
+    id: context
+    attributes:
+      label: Where did you see it? / Onde você viu?
+      description: A job posting or resume phrase (fictional is fine) / Um trecho de vaga ou currículo (pode ser fictício)

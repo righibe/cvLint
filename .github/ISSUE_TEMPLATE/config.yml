@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Security vulnerability / Vulnerabilidade de segurança
+    url: https://github.com/righibe/cvLint/security/advisories/new
+    about: Report privately, never in a public issue / Reporte em privado, nunca numa issue pública
+  - name: Try cvlint / Testar o cvlint
+    url: https://cvlint.righi.dev
+    about: The live website / O site no ar
