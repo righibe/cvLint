@@ -1,16 +1,13 @@
 # Keep the build context small and free of secrets.
-.git
-.github
-.next
+# Dotfiles and dot-folders stay out, except the npm config the build needs.
+.*
+!.npmrc
 node_modules
 coverage
 playwright-report
 test-results
 blob-report
 public/pdfjs
-.env
-.env.*
-!.env.example
 *.pem
 *.log
 *.tsbuildinfo
