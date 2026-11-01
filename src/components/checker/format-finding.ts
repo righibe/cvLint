@@ -1,7 +1,7 @@
 import type { Finding } from "@/lib/ats/types";
 import type { Dictionary } from "@/i18n/dictionaries/en";
 
-type Dict = Pick<Dictionary, "findings" | "sectionNames" | "languages">;
+type Dict = Pick<Dictionary, "findings" | "sectionNames" | "languages" | "personalData">;
 
 function lookup<T extends Record<string, string>>(table: T, key: string): string {
   return Object.hasOwn(table, key) ? table[key as keyof T]! : key;
@@ -13,6 +13,11 @@ function formatParam(key: string, value: string, dict: Dict): string {
       return value
         .split(",")
         .map((id) => lookup(dict.sectionNames, id))
+        .join(", ");
+    case "items":
+      return value
+        .split(",")
+        .map((kind) => lookup(dict.personalData, kind))
         .join(", ");
     case "section":
     case "suggestion":

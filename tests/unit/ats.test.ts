@@ -4,6 +4,7 @@ import { detectContact, isPhoneCandidate } from "@/lib/ats/contact";
 import { analyzeContent } from "@/lib/ats/content";
 import { extractJobKeywords, indexText, matchKeywords } from "@/lib/ats/keywords";
 import { detectLanguage } from "@/lib/ats/language";
+import { detectPersonalData } from "@/lib/ats/personal";
 import { detectSections } from "@/lib/ats/sections";
 import { FINDING_IDS, type FindingId } from "@/lib/ats/types";
 import { fold, normalizeText, stripUnsafeChars } from "@/lib/text/normalize";
@@ -377,5 +378,30 @@ describe("analyzeResume", () => {
     const started = performance.now();
     analyzeResume({ resumeText: hostile, jobText: hostile.slice(0, 20_000) });
     expect(performance.now() - started).toBeLessThan(3_000);
+  });
+});
+
+describe("personal data", () => {
+  it("finds documents, birth date, age and marital status", () => {
+    const header = "João Souza\nBrasileiro | 27 anos | Solteiro\nCPF: 123.456.789-09 · RG 12.345.678-9\nData de nascimento: 01/02/1998";
+    expect(detectPersonalData(header)).toEqual(["taxId", "idCard", "birthDate", "age", "maritalStatus"]);
+    expect(detectPersonalData("Date of birth: 1998-02-01\nMarital status: single\nAge: 27")).toEqual(["birthDate", "age", "maritalStatus"]);
+  });
+
+  it("ignores ordinary resume text", () => {
+    expect(detectPersonalData(RESUME_EN)).toEqual([]);
+    expect(detectPersonalData(RESUME_PT)).toEqual([]);
+    expect(detectPersonalData("Desenvolvedor com 10 anos de experiência\n• Atendi 25 anos de dados históricos, migrando tudo")).toEqual([]);
+    // Marital words inside a long sentence are not a status line.
+    expect(detectPersonalData(`• Integrei o sistema legado, casado com o novo ERP, ${"reduzindo retrabalho ".repeat(4)}`)).toEqual([]);
+  });
+
+  it("is reported without changing the score", () => {
+    const clean = analyzeResume({ resumeText: RESUME_PT });
+    const result = analyzeResume({ resumeText: RESUME_PT.replace("Resumo\n", "CPF 123.456.789-09 | Casada\n\nResumo\n") });
+    const finding = result.findings.find((f) => f.id === "contact.personalData");
+    expect(finding).toMatchObject({ severity: "warning", params: { items: "taxId,maritalStatus" } });
+    expect(result.score).toBe(clean.score);
+    expect(clean.findings.some((f) => f.id === "contact.personalData")).toBe(false);
   });
 });

@@ -20,7 +20,7 @@ export default async function CheckerPage({ params }: Props) {
   const { locale } = await params;
   if (!isLocale(locale)) notFound();
   const dict = getDictionary(locale);
-  const { checker, report, findings, errors, sectionNames, languages, common } = dict;
+  const { checker, report, findings, errors, sectionNames, languages, personalData, common } = dict;
 
   return (
     <div className="container">
@@ -28,7 +28,7 @@ export default async function CheckerPage({ params }: Props) {
         <h1>{checker.title}</h1>
         <p>{checker.intro}</p>
       </div>
-      <CheckerTool dict={{ checker, report, findings, errors, sectionNames, languages, common }} />
+      <CheckerTool dict={{ checker, report, findings, errors, sectionNames, languages, personalData, common }} />
     </div>
   );
 }

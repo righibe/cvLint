@@ -3,7 +3,7 @@ import type { AnalysisResult, Finding, Severity } from "@/lib/ats/types";
 import type { Dictionary } from "@/i18n/dictionaries/en";
 import { formatFinding } from "./format-finding";
 
-type ReportDict = Pick<Dictionary, "report" | "findings" | "sectionNames" | "languages">;
+type ReportDict = Pick<Dictionary, "report" | "findings" | "sectionNames" | "languages" | "personalData">;
 
 const SEVERITY_CLASS: Record<Severity, string> = {
   critical: "badge badge-critical",

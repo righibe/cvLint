@@ -1,5 +1,6 @@
 import type { FindingId } from "@/lib/ats/types";
 import type { SectionId } from "@/lib/ats/lexicon";
+import type { PersonalDataKind } from "@/lib/ats/personal";
 import type { ParseErrorCode } from "@/lib/parser/errors";
 import type { Dictionary } from "./en";
 
@@ -36,6 +37,8 @@ const findings: Record<FindingId, string> = {
   "contact.linkedinHidden":
     "“LinkedIn” aparece só como palavra; a URL provavelmente está escondida num link, e o ATS não lê links. Escreva a URL como texto (linkedin.com/in/voce).",
   "contact.linkedinMissing": "Sem URL do LinkedIn. É recomendado incluir.",
+  "contact.personalData":
+    "Dados pessoais desnecessários encontrados: {items}. O recrutador não precisa deles, abrem espaço para viés e um currículo vazado pode ser usado em golpes. Remova.",
   "content.quantified": "{count} linhas têm números ou métricas. Ótimo, seus resultados são mensuráveis.",
   "content.quantifiedLow": "Só {count} linha(s) têm números. Quantifique seu impacto (%, tempo economizado, usuários, receita).",
   "content.actionVerbs": "{count} linhas começam com verbos de ação fortes.",
@@ -77,6 +80,14 @@ const sectionNames: Record<SectionId, string> = {
   projects: "Projetos",
   certifications: "Certificações",
   languages: "Idiomas",
+};
+
+const personalData: Record<PersonalDataKind, string> = {
+  taxId: "CPF",
+  idCard: "RG",
+  birthDate: "data de nascimento",
+  age: "idade",
+  maritalStatus: "estado civil",
 };
 
 export const pt: Dictionary = {
@@ -173,6 +184,7 @@ export const pt: Dictionary = {
   findings,
   errors,
   sectionNames,
+  personalData,
   builder: {
     title: "Gerador de currículo",
     intro: "Salvo só neste navegador. Gere o PDF quando terminar.",

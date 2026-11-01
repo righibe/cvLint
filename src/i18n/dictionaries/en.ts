@@ -1,5 +1,6 @@
 import type { FindingId } from "@/lib/ats/types";
 import type { SectionId } from "@/lib/ats/lexicon";
+import type { PersonalDataKind } from "@/lib/ats/personal";
 import type { ParseErrorCode } from "@/lib/parser/errors";
 
 const findings: Record<FindingId, string> = {
@@ -35,6 +36,8 @@ const findings: Record<FindingId, string> = {
   "contact.linkedinHidden":
     "“LinkedIn” appears only as a word; the URL is probably hidden behind a link, which an ATS does not read. Write the URL as text (linkedin.com/in/you).",
   "contact.linkedinMissing": "No LinkedIn URL. Adding one is recommended.",
+  "contact.personalData":
+    "Unnecessary personal data found: {items}. Recruiters do not need it, it invites bias and a leaked resume can be used for fraud. Remove it.",
   "content.quantified": "{count} lines include numbers or metrics. Great, your results are measurable.",
   "content.quantifiedLow": "Only {count} line(s) include numbers. Quantify your impact (%, time saved, users, revenue).",
   "content.actionVerbs": "{count} lines start with strong action verbs.",
@@ -74,6 +77,14 @@ const sectionNames: Record<SectionId, string> = {
   projects: "Projects",
   certifications: "Certifications",
   languages: "Languages",
+};
+
+const personalData: Record<PersonalDataKind, string> = {
+  taxId: "CPF (tax ID)",
+  idCard: "RG (ID card)",
+  birthDate: "date of birth",
+  age: "age",
+  maritalStatus: "marital status",
 };
 
 export const en = {
@@ -170,6 +181,7 @@ export const en = {
   findings,
   errors,
   sectionNames,
+  personalData,
   builder: {
     title: "Resume builder",
     intro: "Saved only in this browser. Print to PDF when you are done.",

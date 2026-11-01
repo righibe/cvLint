@@ -2,6 +2,7 @@ import { RESUME_HEADINGS } from "../resume/format";
 import { normalizeText } from "../text/normalize";
 import { detectContact } from "./contact";
 import { analyzeContent } from "./content";
+import { detectPersonalData } from "./personal";
 import { extractJobKeywords, indexText, matchKeywords } from "./keywords";
 import { detectLanguage } from "./language";
 import type { SectionId } from "./lexicon";
@@ -142,6 +143,9 @@ export function analyzeResume(input: AnalysisInput): AnalysisResult {
   } else {
     findings.add("contact", "contact.linkedinMissing", "info");
   }
+  // Advice only: an ATS parses the resume the same way, so the score is not affected.
+  const personal = detectPersonalData(text);
+  if (personal.length > 0) findings.add("contact", "contact.personalData", "warning", { items: personal.join(",") });
 
   // ---- Sections -----------------------------------------------------------------
   const sections = detectSections(text);

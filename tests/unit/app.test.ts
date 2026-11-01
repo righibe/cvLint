@@ -74,6 +74,12 @@ describe("formatFinding", () => {
     );
   });
 
+  it("localizes personal data kinds", () => {
+    const finding = { id: "contact.personalData", severity: "warning", category: "contact", params: { items: "taxId,maritalStatus" } } as const;
+    expect(formatFinding(finding, pt)).toContain("CPF, estado civil");
+    expect(formatFinding(finding, en)).toContain("CPF (tax ID), marital status");
+  });
+
   it("treats user-controlled parameters as plain text", () => {
     const text = formatFinding(
       { id: "sections.nonstandard", severity: "info", category: "sections", params: { heading: "$& <img src=x onerror=alert(1)>", suggestion: "__proto__" } },

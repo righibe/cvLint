@@ -15,7 +15,7 @@ import type { Dictionary } from "@/i18n/dictionaries/en";
 import { ScoreReport } from "./score-report";
 
 type Source = "upload" | "paste" | "builder";
-type CheckerDict = Pick<Dictionary, "checker" | "report" | "findings" | "errors" | "sectionNames" | "languages" | "common">;
+type CheckerDict = Pick<Dictionary, "checker" | "report" | "findings" | "errors" | "sectionNames" | "languages" | "personalData" | "common">;
 
 const ACCEPT = ".pdf,.docx,.txt,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document,text/plain";
 const MAX_PASTE_CHARS = 60_000;
