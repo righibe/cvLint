@@ -232,6 +232,24 @@ export const ACTION_VERBS = new Set(
   ).split(" "),
 );
 
+/**
+ * Wording that describes duties or generic traits instead of results. Written the way
+ * it should be displayed; matched on folded tokens, so "detail-oriented" also matches
+ * "detail oriented" and "responsável por" matches "responsavel por".
+ */
+export const WEAK_PHRASES = [
+  // English
+  "responsible for", "duties included", "duties include", "tasked with", "in charge of", "worked on", "helped with",
+  "assisted with", "team player", "hard worker", "hardworking", "hard-working", "detail-oriented", "results-driven",
+  "results-oriented", "self-starter", "self-motivated", "fast learner", "quick learner", "go-getter",
+  "think outside the box",
+  // Portuguese
+  "responsável por", "responsável pela", "responsável pelo", "participei de", "participei do", "participei da",
+  "ajudei", "auxiliei", "proativo", "proativa", "pró-ativo", "pró-ativa", "trabalho sob pressão",
+  "facilidade de aprendizado", "facilidade em aprender", "bom relacionamento interpessoal", "focado em resultados",
+  "focada em resultados", "pensar fora da caixa", "espírito de equipe", "comprometido", "comprometida",
+];
+
 export type SectionId = "summary" | "experience" | "education" | "skills" | "projects" | "certifications" | "languages";
 
 export const SECTION_SYNONYMS: Record<SectionId, string[]> = {

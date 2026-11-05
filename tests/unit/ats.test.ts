@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { analyzeResume, WEIGHTS_WITH_JOB, WEIGHTS_WITHOUT_JOB } from "@/lib/ats/analyze";
+import { analyzeResume, WEAK_PHRASES_PENALTY_FROM, WEIGHTS_WITH_JOB, WEIGHTS_WITHOUT_JOB } from "@/lib/ats/analyze";
 import { detectContact, isPhoneCandidate } from "@/lib/ats/contact";
 import { analyzeContent } from "@/lib/ats/content";
 import { extractJobKeywords, indexText, matchKeywords } from "@/lib/ats/keywords";
@@ -222,6 +222,19 @@ describe("content", () => {
     expect(analyzeContent("– Action: built a pipeline for the team\n– Resultado: reduzi custos em 20%").actionVerbs).toBe(2);
   });
 
+  it("finds duty and cliche wording in both languages", () => {
+    const en = analyzeContent("• Responsible for the billing API\n• Detail-oriented team player, responsible for deploys");
+    expect(en.weakPhrases).toEqual([
+      { phrase: "responsible for", count: 2 },
+      { phrase: "team player", count: 1 },
+      { phrase: "detail-oriented", count: 1 },
+    ]);
+    const pt = analyzeContent("Profissional pró-ativo, responsável pela área de dados\nAuxiliei o time de suporte");
+    expect(pt.weakPhrases.map((w) => w.phrase).sort()).toEqual(["auxiliei", "pró-ativo", "responsável pela"]);
+    expect(analyzeContent(RESUME_EN).weakPhrases).toEqual([]);
+    expect(analyzeContent(RESUME_PT).weakPhrases).toEqual([]);
+  });
+
   it("does not count years as metrics", () => {
     expect(analyzeContent("Worked at the company between 2019 and 2021").quantified).toBe(0);
   });
@@ -340,6 +353,22 @@ describe("analyzeResume", () => {
       ]),
     );
     expect(result.score).toBeLessThan(40);
+  });
+
+  it("reports weak wording and only penalizes repeated use", () => {
+    const clean = analyzeResume({ resumeText: RESUME_EN });
+    const once = analyzeResume({ resumeText: RESUME_EN.replace("• Mentored 5", "• Responsible for mentoring 5") });
+    const often = analyzeResume({
+      resumeText: RESUME_EN.replace("• Mentored 5", "• Responsible for mentoring 5").replace(
+        "Backend engineer with",
+        "Hard-working team player and backend engineer with",
+      ),
+    });
+    expect(ids(clean)).not.toContain("content.weakPhrases");
+    expect(once.findings.find((f) => f.id === "content.weakPhrases")?.params).toEqual({ count: 1, phrases: "“responsible for”" });
+    expect(once.categories.content!.score).toBe(clean.categories.content!.score);
+    expect(often.findings.find((f) => f.id === "content.weakPhrases")?.params?.count).toBe(WEAK_PHRASES_PENALTY_FROM);
+    expect(often.categories.content!.score).toBe(clean.categories.content!.score - 5);
   });
 
   it("gives half credit to icon-prefixed headings", () => {

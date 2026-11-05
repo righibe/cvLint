@@ -1,5 +1,5 @@
-import { tokenize } from "../text/tokenize";
-import { ACTION_VERBS } from "./lexicon";
+import { countPhrase, padded, tokenize } from "../text/tokenize";
+import { ACTION_VERBS, WEAK_PHRASES } from "./lexicon";
 
 export interface ContentReport {
   words: number;
@@ -10,7 +10,11 @@ export interface ContentReport {
   years: number;
   firstPerson: number;
   garbled: number;
+  /** Duty/trait wording ("responsible for", "proativo"), most frequent first. */
+  weakPhrases: { phrase: string; count: number }[];
 }
+
+const WEAK = WEAK_PHRASES.map((phrase) => ({ phrase, tokens: tokenize(phrase) }));
 
 const BULLET = /^[•·▪▫●○◦‣⁃∙■□►▸➢➤✓✔*\-–—]\s*/;
 /** "Action: built…", "Resultado: reduzi…" (STAR-style labels before the verb). */
@@ -63,6 +67,11 @@ export function analyzeContent(text: string): ContentReport {
   }
 
   const tokens = tokenize(text);
+  const paddedTokens = padded(tokens);
+  const weakPhrases = WEAK.map((w) => ({ phrase: w.phrase, count: countPhrase(paddedTokens, w.tokens) }))
+    .filter((w) => w.count > 0)
+    .sort((a, b) => b.count - a.count);
+
   return {
     words: tokens.length,
     lines: lines.length,
@@ -72,5 +81,6 @@ export function analyzeContent(text: string): ContentReport {
     years: tokens.filter((t) => YEAR.test(t)).length,
     firstPerson: tokens.filter((t) => t === "i" || t === "my" || t === "me" || t === "myself").length,
     garbled: (text.match(GARBLED) ?? []).length + strayGlyphs(text),
+    weakPhrases,
   };
 }

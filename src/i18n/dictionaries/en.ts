@@ -46,6 +46,8 @@ const findings: Record<FindingId, string> = {
   "content.bulletsMissing": "Few or no bullet points. Break your experience into short bullets.",
   "content.datesMissing": "No dates found. ATS use dates to calculate experience, so add month/year to each role.",
   "content.pronouns": "First-person pronouns used {count} times. Resumes usually leave out “I/my”.",
+  "content.weakPhrases":
+    "Weak or generic wording used {count} time(s): {phrases}. Say what you did and the result instead of listing duties or traits.",
   "keywords.match": "{matched} of {total} job keywords found ({percent}%).",
   "keywords.missing": "Consider adding, if they are true for you: {terms}.",
   "keywords.stuffing": "“{term}” appears {count} times. Keyword stuffing can get flagged, so use it naturally.",

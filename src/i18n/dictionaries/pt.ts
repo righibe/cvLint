@@ -48,6 +48,8 @@ const findings: Record<FindingId, string> = {
   "content.bulletsMissing": "Poucos ou nenhum tópico. Divida suas experiências em bullets curtos.",
   "content.datesMissing": "Nenhuma data encontrada. O ATS usa datas para calcular experiência; coloque mês/ano em cada cargo.",
   "content.pronouns": "Pronomes em primeira pessoa aparecem {count} vezes. Currículos costumam omitir “I/my”.",
+  "content.weakPhrases":
+    "Expressões fracas ou genéricas usadas {count} vez(es): {phrases}. Diga o que você fez e o resultado, em vez de listar obrigações ou qualidades.",
   "keywords.match": "{matched} de {total} palavras-chave da vaga encontradas ({percent}%).",
   "keywords.missing": "Considere incluir, se forem verdade para você: {terms}.",
   "keywords.stuffing": "“{term}” aparece {count} vezes. Repetição excessiva pode ser penalizada; use com naturalidade.",

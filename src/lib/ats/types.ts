@@ -49,6 +49,7 @@ export const FINDING_IDS = [
   "content.bulletsMissing",
   "content.datesMissing",
   "content.pronouns",
+  "content.weakPhrases",
   "keywords.match",
   "keywords.missing",
   "keywords.stuffing",

@@ -44,6 +44,7 @@ function headingFor(lang: Lang, id: SectionId): string {
 // Scanned/image PDFs yield (almost) no words; short but real text still gets a full report.
 const MIN_READABLE_WORDS = 10;
 const MAX_JOB_CHARS = 20_000;
+export const WEAK_PHRASES_PENALTY_FROM = 3;
 const SEVERITY_ORDER: Record<Severity, number> = { critical: 0, warning: 1, info: 2, pass: 3 };
 
 const clamp = (n: number) => Math.max(0, Math.min(100, Math.round(n)));
@@ -193,6 +194,19 @@ export function analyzeResume(input: AnalysisInput): AnalysisResult {
   if (language.resume === "en" && content.firstPerson >= 4) {
     contentScore -= 10;
     findings.add("content", "content.pronouns", "info", { count: content.firstPerson });
+  }
+
+  const weakCount = content.weakPhrases.reduce((sum, w) => sum + w.count, 0);
+  if (weakCount > 0) {
+    // One slip is only a tip; a resume written in duties and cliches loses points.
+    if (weakCount >= WEAK_PHRASES_PENALTY_FROM) contentScore -= 5;
+    findings.add("content", "content.weakPhrases", "info", {
+      count: weakCount,
+      phrases: content.weakPhrases
+        .slice(0, 5)
+        .map((w) => `“${w.phrase}”`)
+        .join(", "),
+    });
   }
 
   // ---- Keywords -----------------------------------------------------------------
