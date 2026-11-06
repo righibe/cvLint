@@ -50,6 +50,8 @@ export const FINDING_IDS = [
   "content.datesMissing",
   "content.pronouns",
   "content.weakPhrases",
+  "content.longBullets",
+  "content.repeatedVerb",
   "keywords.match",
   "keywords.missing",
   "keywords.stuffing",

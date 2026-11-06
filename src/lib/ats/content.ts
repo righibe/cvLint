@@ -1,4 +1,4 @@
-import { countPhrase, padded, tokenize } from "../text/tokenize";
+import { countPhrase, padded, stem, tokenize } from "../text/tokenize";
 import { ACTION_VERBS, WEAK_PHRASES } from "./lexicon";
 
 export interface ContentReport {
@@ -12,7 +12,14 @@ export interface ContentReport {
   garbled: number;
   /** Duty/trait wording ("responsible for", "proativo"), most frequent first. */
   weakPhrases: { phrase: string; count: number }[];
+  /** Bullets longer than MAX_BULLET_WORDS words. */
+  longBullets: number;
+  /** The action verb that opens the most lines ("developed" also counts "develop"). */
+  topVerb: { verb: string; count: number } | null;
 }
+
+/** Past this many words a bullet stops being scannable. */
+export const MAX_BULLET_WORDS = 35;
 
 const WEAK = WEAK_PHRASES.map((phrase) => ({ phrase, tokens: tokenize(phrase) }));
 
@@ -51,6 +58,8 @@ export function analyzeContent(text: string): ContentReport {
   let bullets = 0;
   let quantified = 0;
   let actionVerbs = 0;
+  let longBullets = 0;
+  const verbUse = new Map<string, { verb: string; count: number }>();
 
   for (const line of lines) {
     const trimmed = line.trim();
@@ -58,12 +67,18 @@ export function analyzeContent(text: string): ContentReport {
     if (isBullet) bullets += 1;
     const body = trimmed.replace(BULLET, "").slice(0, 400);
     const tokens = tokenize(body);
+    if (isBullet && tokens.length > MAX_BULLET_WORDS) longBullets += 1;
     if (isQuantified(body, tokens)) quantified += 1;
     const verbTokens = tokenize(body.replace(LEAD_LABEL, ""));
     // "Co-founded", "co-led": the hyphen splits off "co".
     if (verbTokens[0] === "co") verbTokens.shift();
     const first = verbTokens[0];
-    if (first && verbTokens.length >= 3 && ACTION_VERBS.has(first)) actionVerbs += 1;
+    if (first && verbTokens.length >= 3 && ACTION_VERBS.has(first)) {
+      actionVerbs += 1;
+      const use = verbUse.get(stem(first)) ?? { verb: first, count: 0 };
+      use.count += 1;
+      verbUse.set(stem(first), use);
+    }
   }
 
   const tokens = tokenize(text);
@@ -71,6 +86,9 @@ export function analyzeContent(text: string): ContentReport {
   const weakPhrases = WEAK.map((w) => ({ phrase: w.phrase, count: countPhrase(paddedTokens, w.tokens) }))
     .filter((w) => w.count > 0)
     .sort((a, b) => b.count - a.count);
+
+  let topVerb: ContentReport["topVerb"] = null;
+  for (const use of verbUse.values()) if (!topVerb || use.count > topVerb.count) topVerb = use;
 
   return {
     words: tokens.length,
@@ -82,5 +100,7 @@ export function analyzeContent(text: string): ContentReport {
     firstPerson: tokens.filter((t) => t === "i" || t === "my" || t === "me" || t === "myself").length,
     garbled: (text.match(GARBLED) ?? []).length + strayGlyphs(text),
     weakPhrases,
+    longBullets,
+    topVerb,
   };
 }

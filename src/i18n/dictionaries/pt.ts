@@ -50,6 +50,10 @@ const findings: Record<FindingId, string> = {
   "content.pronouns": "Pronomes em primeira pessoa aparecem {count} vezes. Currículos costumam omitir “I/my”.",
   "content.weakPhrases":
     "Expressões fracas ou genéricas usadas {count} vez(es): {phrases}. Diga o que você fez e o resultado, em vez de listar obrigações ou qualidades.",
+  "content.longBullets":
+    "{count} bullet(s) passam de {max} palavras. Divida ou enxugue para cada um dizer uma coisa só.",
+  "content.repeatedVerb":
+    "{count} linhas começam com “{verb}”. Varie os verbos para cada linha mostrar um tipo diferente de contribuição.",
   "keywords.match": "{matched} de {total} palavras-chave da vaga encontradas ({percent}%).",
   "keywords.missing": "Considere incluir, se forem verdade para você: {terms}.",
   "keywords.stuffing": "“{term}” aparece {count} vezes. Repetição excessiva pode ser penalizada; use com naturalidade.",

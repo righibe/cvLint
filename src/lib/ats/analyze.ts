@@ -1,7 +1,7 @@
 import { RESUME_HEADINGS } from "../resume/format";
 import { normalizeText } from "../text/normalize";
 import { detectContact } from "./contact";
-import { analyzeContent } from "./content";
+import { analyzeContent, MAX_BULLET_WORDS } from "./content";
 import { detectPersonalData } from "./personal";
 import { extractJobKeywords, indexText, matchKeywords } from "./keywords";
 import { detectLanguage } from "./language";
@@ -45,6 +45,7 @@ function headingFor(lang: Lang, id: SectionId): string {
 const MIN_READABLE_WORDS = 10;
 const MAX_JOB_CHARS = 20_000;
 export const WEAK_PHRASES_PENALTY_FROM = 3;
+export const REPEATED_VERB_FROM = 4;
 const SEVERITY_ORDER: Record<Severity, number> = { critical: 0, warning: 1, info: 2, pass: 3 };
 
 const clamp = (n: number) => Math.max(0, Math.min(100, Math.round(n)));
@@ -207,6 +208,14 @@ export function analyzeResume(input: AnalysisInput): AnalysisResult {
         .map((w) => `“${w.phrase}”`)
         .join(", "),
     });
+  }
+
+  // Readability tips: they do not change the score.
+  if (content.longBullets > 0) {
+    findings.add("content", "content.longBullets", "info", { count: content.longBullets, max: MAX_BULLET_WORDS });
+  }
+  if (content.topVerb && content.topVerb.count >= REPEATED_VERB_FROM) {
+    findings.add("content", "content.repeatedVerb", "info", { verb: content.topVerb.verb, count: content.topVerb.count });
   }
 
   // ---- Keywords -----------------------------------------------------------------

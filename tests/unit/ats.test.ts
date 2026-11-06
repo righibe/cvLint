@@ -235,6 +235,15 @@ describe("content", () => {
     expect(analyzeContent(RESUME_PT).weakPhrases).toEqual([]);
   });
 
+  it("counts over-long bullets and finds the most repeated opening verb", () => {
+    const long = `• Built ${"a very long description of the work ".repeat(6)}`;
+    const report = analyzeContent(`${long}\nDeveloped the billing API\n• Develop new reports weekly\n• Developed a CLI tool\nBuilt ${"word ".repeat(40)}`);
+    expect(report.longBullets).toBe(1);
+    expect(report.topVerb).toEqual({ verb: "developed", count: 3 });
+    expect(analyzeContent(RESUME_EN)).toMatchObject({ longBullets: 0, topVerb: { count: 1 } });
+    expect(analyzeContent("no verbs here").topVerb).toBeNull();
+  });
+
   it("does not count years as metrics", () => {
     expect(analyzeContent("Worked at the company between 2019 and 2021").quantified).toBe(0);
   });
@@ -369,6 +378,20 @@ describe("analyzeResume", () => {
     expect(once.categories.content!.score).toBe(clean.categories.content!.score);
     expect(often.findings.find((f) => f.id === "content.weakPhrases")?.params?.count).toBe(WEAK_PHRASES_PENALTY_FROM);
     expect(often.categories.content!.score).toBe(clean.categories.content!.score - 5);
+  });
+
+  it("gives readability tips without changing the score", () => {
+    const clean = analyzeResume({ resumeText: RESUME_EN });
+    const wordy = RESUME_EN.replace(/• (?:Built|Reduced|Mentored|Designed) /g, "• Led ").replace(
+      "introduced code reviews.",
+      `introduced code reviews ${"across every squad in the engineering organization ".repeat(5)}.`,
+    );
+    const result = analyzeResume({ resumeText: wordy });
+    expect(ids(clean)).not.toContain("content.longBullets");
+    expect(ids(clean)).not.toContain("content.repeatedVerb");
+    expect(result.findings.find((f) => f.id === "content.longBullets")?.params).toEqual({ count: 1, max: 35 });
+    expect(result.findings.find((f) => f.id === "content.repeatedVerb")?.params).toEqual({ verb: "led", count: 5 });
+    expect(result.categories.content!.score).toBe(clean.categories.content!.score);
   });
 
   it("gives half credit to icon-prefixed headings", () => {

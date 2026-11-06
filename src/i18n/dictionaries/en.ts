@@ -48,6 +48,9 @@ const findings: Record<FindingId, string> = {
   "content.pronouns": "First-person pronouns used {count} times. Resumes usually leave out “I/my”.",
   "content.weakPhrases":
     "Weak or generic wording used {count} time(s): {phrases}. Say what you did and the result instead of listing duties or traits.",
+  "content.longBullets":
+    "{count} bullet(s) run past {max} words. Split them or cut the filler so each one makes a single point.",
+  "content.repeatedVerb": "{count} lines start with “{verb}”. Vary the verbs so each line shows a different kind of contribution.",
   "keywords.match": "{matched} of {total} job keywords found ({percent}%).",
   "keywords.missing": "Consider adding, if they are true for you: {terms}.",
   "keywords.stuffing": "“{term}” appears {count} times. Keyword stuffing can get flagged, so use it naturally.",
