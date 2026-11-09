@@ -1,9 +1,11 @@
 import { describe, expect, it } from "vitest";
 import { formatFinding } from "@/components/checker/format-finding";
+import { reportToMarkdown } from "@/components/checker/report-markdown";
 import { isLocale, negotiateLocale } from "@/i18n/config";
 import { en } from "@/i18n/dictionaries/en";
 import { pt } from "@/i18n/dictionaries/pt";
 import { getDictionary } from "@/i18n/get-dictionary";
+import { analyzeResume } from "@/lib/ats/analyze";
 import { scoreBand } from "@/lib/ats/band";
 import { FINDING_IDS } from "@/lib/ats/types";
 import { PARSE_ERROR_CODES } from "@/lib/parser/errors";
@@ -91,6 +93,35 @@ describe("formatFinding", () => {
 
   it("leaves missing parameters empty", () => {
     expect(formatFinding({ id: "text.short", severity: "warning", category: "parseability" }, en)).toContain("Only  words");
+  });
+});
+
+describe("reportToMarkdown", () => {
+  const resume = [
+    "Jane Doe", "jane@example.com | +1 (555) 123-4567", "Summary", "Backend engineer building APIs in Python.",
+    "Experience", "• Led the migration of 40 services to Kubernetes in 2021", "• Built a Django API serving 2M requests in 2022",
+    "Skills", "Python, Django, Kubernetes",
+  ].join("\n");
+
+  it("renders score, categories, findings and keywords", () => {
+    const result = analyzeResume({ resumeText: resume, jobText: "Requirements: Python, Django and Kafka" });
+    const md = reportToMarkdown(result, en);
+    expect(md).toContain(`# cvlint · ATS score: ${result.score}/100 (`);
+    expect(md).toContain(`- Keywords: ${result.categories.keywords!.score}/100 (weight 35%)`);
+    expect(md).toContain("## What to improve");
+    expect(md).toContain("- [warn] Missing section: Education.");
+    expect(md).toContain("- [ok] Email address found.");
+    expect(md).toContain("- Missing (1): Kafka");
+    expect(md).toMatch(/- Found [(]2[)]: (Python, Django|Django, Python)/);
+    expect(md.endsWith("\n")).toBe(true);
+  });
+
+  it("is localized and skips keywords without a job", () => {
+    const md = reportToMarkdown(analyzeResume({ resumeText: resume }), pt);
+    expect(md).toContain("Nota ATS");
+    expect(md).toContain("- Legibilidade: ");
+    expect(md).not.toContain("Palavras-chave");
+    expect(md).not.toMatch(/[{][a-z]+[}]/);
   });
 });
 

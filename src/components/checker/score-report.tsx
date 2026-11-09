@@ -1,7 +1,9 @@
 import { CATEGORY_ORDER, scoreBand } from "@/lib/ats/band";
 import type { AnalysisResult, Finding, Severity } from "@/lib/ats/types";
 import type { Dictionary } from "@/i18n/dictionaries/en";
+import { CopyReport } from "./copy-report";
 import { formatFinding } from "./format-finding";
+import { reportToMarkdown } from "./report-markdown";
 
 type ReportDict = Pick<Dictionary, "report" | "findings" | "sectionNames" | "languages" | "personalData">;
 
@@ -72,6 +74,7 @@ export function ScoreReport({ result, extractedText, dict }: { result: AnalysisR
         <p className="help">
           {dict.languages[result.language.resume]} · {result.stats.words} {report.words} · {report.disclaimer}
         </p>
+        <CopyReport getMarkdown={() => reportToMarkdown(result, dict)} dict={report} />
       </section>
 
       <section className="card" aria-labelledby="findings-title">

@@ -157,6 +157,9 @@ test.describe("ATS checker", () => {
     await expect(report.getByRole("img", { name: /ATS score: \d+\/100/ })).toBeVisible();
     await expect(report.locator(".chip-miss", { hasText: "Kafka" })).toBeVisible();
     await expect(report.locator(".chip-hit", { hasText: "Python" })).toBeVisible();
+    // Clipboard access depends on browser permissions; the fallback saves a file.
+    await report.getByTestId("copy-report").click();
+    await expect(report.getByRole("status")).toHaveText(/Copied|saved as a file/);
     expect(errors).toEqual([]);
   });
 
