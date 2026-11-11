@@ -101,6 +101,11 @@ export const SKILLS: SkillDef[] = [
   s("Svelte"),
   s("Tailwind", "tailwindcss", "tailwind css"),
   s("Redux"),
+  s("Vite"),
+  s("Webpack"),
+  s("Nuxt", "nuxt.js", "nuxtjs"),
+  s("Astro"),
+  s("Storybook"),
   s("Node.js", "nodejs", "node"),
   cs("Express", "express.js", "expressjs"),
   s("NestJS", "nest.js"),
@@ -135,8 +140,14 @@ export const SKILLS: SkillDef[] = [
   s("Firebase"),
   s("Supabase"),
   s("Prisma"),
+  s("MariaDB"),
+  s("Cassandra"),
+  s("Snowflake"),
+  s("BigQuery", "big query"),
+  s("Databricks"),
   // Cloud / DevOps
   s("Docker"),
+  s("Docker Compose"),
   s("Kubernetes", "k8s"),
   s("Terraform"),
   s("Ansible"),
@@ -144,6 +155,8 @@ export const SKILLS: SkillDef[] = [
   s("Azure", "microsoft azure"),
   s("GCP", "google cloud", "google cloud platform"),
   s("Vercel"),
+  s("Cloudflare"),
+  s("Heroku"),
   s("Linux"),
   s("Git"),
   s("GitHub"),
@@ -152,6 +165,10 @@ export const SKILLS: SkillDef[] = [
   s("GitHub Actions"),
   s("Jenkins"),
   s("Nginx"),
+  cs("Helm", "helm charts", "helm chart"),
+  s("Grafana"),
+  s("Prometheus"),
+  s("Datadog"),
   s("Kafka", "apache kafka"),
   s("RabbitMQ"),
   s("Observability", "observabilidade", "monitoring", "monitoramento"),
@@ -188,6 +205,11 @@ export const SKILLS: SkillDef[] = [
   s("ETL"),
   cs("Spark", "pyspark", "apache spark"),
   s("Airflow", "apache airflow"),
+  s("dbt"),
+  s("LangChain"),
+  cs("RAG", "retrieval augmented generation", "retrieval-augmented generation"),
+  s("Hugging Face", "huggingface"),
+  s("Prompt Engineering", "engenharia de prompt"),
   // Practices / tools
   s("Agile", "agil", "metodologias ageis", "metodologia agil", "ageis"),
   s("Scrum"),
@@ -198,6 +220,12 @@ export const SKILLS: SkillDef[] = [
   s("Cybersecurity", "information security", "seguranca da informacao", "ciberseguranca", "application security", "appsec"),
   s("OAuth", "oauth2"),
   s("JWT"),
+  s("OpenAPI", "swagger"),
+  s("Postman"),
+  s("WebSockets", "websocket", "web sockets"),
+  s("Accessibility", "acessibilidade", "a11y", "wcag"),
+  s("LGPD"),
+  s("GDPR"),
   s("Networking", "redes de computadores", "computer networks", "tcp/ip"),
   s("SAP"),
   s("Salesforce"),
@@ -205,10 +233,15 @@ export const SKILLS: SkillDef[] = [
   // Languages & soft skills
   s("English", "ingles"),
   s("Spanish", "espanhol"),
+  s("French", "frances"),
+  s("German", "alemao"),
   soft("Communication", "comunicacao"),
   soft("Leadership", "lideranca"),
   soft("Teamwork", "trabalho em equipe"),
   soft("Problem Solving", "resolucao de problemas", "problem-solving"),
+  soft("Adaptability", "adaptabilidade"),
+  soft("Critical Thinking", "pensamento critico"),
+  soft("Time Management", "gestao de tempo", "gestao do tempo"),
 ];
 
 export const ACTION_VERBS = new Set(
@@ -221,6 +254,8 @@ export const ACTION_VERBS = new Set(
     "organized planned presented negotiated generated saved accelerated modernized conducted oversaw directed orchestrated " +
     "cofounded cocreated researched investigated prototyped trained shipped set configured facilitated " +
     "researching investigating developing building leading designing implementing creating managing maintaining " +
+    "redesigned rebuilt rewrote revamped introduced enabled secured debugged monitored upgraded standardized consolidated " +
+    "partnered championed diagnosed " +
     // Portuguese (1st/3rd person past, infinitive, noun forms used as bullet openers)
     "desenvolvi desenvolveu desenvolver desenvolvimento liderei liderou liderar gerenciei gerenciou gerenciar criei criou criar " +
     "implementei implementou implementar implementacao projetei projetou construi construiu construir otimizei otimizou otimizar " +
@@ -228,7 +263,8 @@ export const ACTION_VERBS = new Set(
     "entreguei entregou coordenei coordenou mentorei treinei analisei analisou resolvi resolveu refatorei refatorou refatoracao " +
     "integrei integrou integracao implantei implantou lancei lancou estruturei estruturou colaborei colaborou contribui contribuiu " +
     "escrevi testei documentei pesquisei apoiei organizei planejei apresentei negociei gerei economizei acelerei modernizei conduzi " +
-    "conduziu fundei mantive manteve modelei modelou arquitetei elaborei elaborou"
+    "conduziu fundei mantive manteve modelei modelou arquitetei elaborei elaborou " +
+    "redesenhei reescrevi introduzi padronizei monitorei atualizei corrigi viabilizei administrei supervisionei configurei publiquei"
   ).split(" "),
 );
 
@@ -261,22 +297,28 @@ export const SECTION_SYNONYMS: Record<SectionId, string[]> = {
     "experience", "work experience", "professional experience", "employment", "employment history", "work history",
     "career history", "relevant experience", "experiencia", "experiencias", "experiencia profissional",
     "experiencias profissionais", "historico profissional", "atuacao profissional",
+    "professional background", "experiencia de trabalho", "experiencias de trabalho", "historico de trabalho",
   ],
   education: [
     "education", "academic background", "academic history", "educacao", "formacao", "formacao academica", "escolaridade",
-    "formacao educacional",
+    "formacao educacional", "academic qualifications", "historico academico",
   ],
   skills: [
     "skills", "technical skills", "core skills", "key skills", "competencies", "core competencies", "technologies",
     "tech stack", "hard skills", "soft skills", "habilidades", "habilidades tecnicas", "competencias", "competencias tecnicas",
-    "conhecimentos", "conhecimentos tecnicos", "tecnologias",
+    "conhecimentos", "conhecimentos tecnicos", "tecnologias", "areas of expertise", "principais habilidades",
+    "principais competencias",
   ],
-  projects: ["projects", "personal projects", "selected projects", "projetos", "projetos pessoais", "projetos academicos"],
+  projects: [
+    "projects", "personal projects", "selected projects", "projetos", "projetos pessoais", "projetos academicos",
+    "side projects", "open source projects", "projetos relevantes", "projetos open source",
+  ],
   certifications: [
     "certifications", "certificates", "licenses", "licenses & certifications", "licenses and certifications", "courses",
     "certificacoes", "certificados", "cursos", "cursos e certificacoes", "cursos complementares",
+    "training", "treinamentos",
   ],
-  languages: ["languages", "idiomas", "linguas"],
+  languages: ["languages", "language skills", "foreign languages", "idiomas", "linguas", "linguas estrangeiras"],
 };
 
 /** Creative headings that many ATS fail to map, with the standard heading to use instead. */

@@ -241,3 +241,26 @@ describe("storage preferences", () => {
     expect(saveResume(emptyResume())).toBe(true);
   });
 });
+
+describe("lexicon additions", () => {
+  const terms = (job: string) => extractJobKeywords(job).map((k) => k.term);
+
+  it("knows data, observability and accessibility skills in both languages", () => {
+    expect(terms("Requisitos: Snowflake, dbt, Grafana, Docker Compose e acessibilidade (WCAG)")).toEqual(
+      expect.arrayContaining(["Snowflake", "dbt", "Grafana", "Docker Compose", "Accessibility"]),
+    );
+    expect(terms("Requisitos: Docker Compose")).not.toContain("Docker");
+  });
+
+  it("only counts Helm and RAG as skills when they are written as names", () => {
+    expect(terms("You will be at the helm of the platform team, from rag to riches.")).toEqual(expect.not.arrayContaining(["Helm", "RAG"]));
+    expect(terms("Must know Kubernetes, Helm and RAG pipelines.")).toEqual(expect.arrayContaining(["Helm", "RAG"]));
+  });
+
+  it("recognizes more section headings and action verbs", () => {
+    expect(detectSections("Areas of Expertise\nTreinamentos\nLanguage Skills\nSide Projects\nExperiência de trabalho").found).toEqual([
+      "experience", "skills", "projects", "certifications", "languages",
+    ]);
+    expect(analyzeContent("• Redesenhei o fluxo de checkout da loja\n• Standardized logging across 12 services").actionVerbs).toBe(2);
+  });
+});
