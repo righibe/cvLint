@@ -1,6 +1,6 @@
 import { RESUME_HEADINGS } from "../resume/format";
 import { normalizeText } from "../text/normalize";
-import { detectContact } from "./contact";
+import { detectContact, findBrokenUrl } from "./contact";
 import { analyzeContent, MAX_BULLET_WORDS } from "./content";
 import { detectPersonalData } from "./personal";
 import { extractJobKeywords, indexText, matchKeywords } from "./keywords";
@@ -144,6 +144,11 @@ export function analyzeResume(input: AnalysisInput): AnalysisResult {
     findings.add("contact", "contact.linkedinHidden", "info");
   } else {
     findings.add("contact", "contact.linkedinMissing", "info");
+  }
+  const brokenUrl = findBrokenUrl(text);
+  if (brokenUrl) {
+    contactScore -= 10;
+    findings.add("contact", "contact.brokenUrl", "warning", { url: brokenUrl.slice(0, 80) });
   }
   // Advice only: an ATS parses the resume the same way, so the score is not affected.
   const personal = detectPersonalData(text);

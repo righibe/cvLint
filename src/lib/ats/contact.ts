@@ -35,6 +35,24 @@ export function isPhoneCandidate(candidate: string): boolean {
   return trimmed.startsWith("+") || /\(\d{2,4}\)/.test(trimmed) || digits.length >= 10;
 }
 
+// A link whose line ends in "-" or "_" and continues on the next line was wrapped by the
+// editor: "linkedin.com/in/jane-" + "doe". A bare "linkedin.com/in/" is cut the same way.
+const URL_CUT = /^(?:https?:\/\/)?(?:www\.)?[a-z0-9-]{1,63}(?:\.[a-z0-9-]{1,63}){1,8}\/\S{0,200}[-_]$/i;
+const PROFILE_CUT = /linkedin\.com\/(?:in|pub)\/$/i;
+
+/** First link that a line break cuts in two, or null. */
+export function findBrokenUrl(text: string): string | null {
+  const lines = text.split("\n");
+  for (let i = 0; i < lines.length - 1; i += 1) {
+    const line = lines[i]!.trimEnd();
+    const token = line.slice(line.lastIndexOf(" ") + 1).replace(/^[<([{"'`]+/, "");
+    if (token.length < 6 || token.length > MAX_TOKEN) continue;
+    if (!URL_CUT.test(token) && !PROFILE_CUT.test(token)) continue;
+    if (/^[a-z0-9]/i.test(lines[i + 1]!.trimStart())) return token;
+  }
+  return null;
+}
+
 export function detectContact(text: string): ContactReport {
   let email = false;
   let phone = false;

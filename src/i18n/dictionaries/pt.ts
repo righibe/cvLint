@@ -37,6 +37,8 @@ const findings: Record<FindingId, string> = {
   "contact.linkedinHidden":
     "“LinkedIn” aparece só como palavra; a URL provavelmente está escondida num link, e o ATS não lê links. Escreva a URL como texto (linkedin.com/in/voce).",
   "contact.linkedinMissing": "Sem URL do LinkedIn. É recomendado incluir.",
+  "contact.brokenUrl":
+    "O link “{url}” está cortado por uma quebra de linha, e o ATS lê só um pedaço. Encurte a linha de contato ou deixe o link sozinho em uma linha.",
   "contact.personalData":
     "Dados pessoais desnecessários encontrados: {items}. O recrutador não precisa deles, abrem espaço para viés e um currículo vazado pode ser usado em golpes. Remova.",
   "content.quantified": "{count} linhas têm números ou métricas. Ótimo, seus resultados são mensuráveis.",

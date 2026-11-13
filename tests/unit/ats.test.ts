@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { analyzeResume, WEAK_PHRASES_PENALTY_FROM, WEIGHTS_WITH_JOB, WEIGHTS_WITHOUT_JOB } from "@/lib/ats/analyze";
-import { detectContact, isPhoneCandidate } from "@/lib/ats/contact";
+import { detectContact, findBrokenUrl, isPhoneCandidate } from "@/lib/ats/contact";
 import { analyzeContent } from "@/lib/ats/content";
 import { extractJobKeywords, indexText, matchKeywords } from "@/lib/ats/keywords";
 import { detectLanguage } from "@/lib/ats/language";
@@ -185,6 +185,18 @@ describe("contact", () => {
     expect(isPhoneCandidate("+55 11 91234-5678")).toBe(true);
     expect(isPhoneCandidate("123")).toBe(false);
     expect(detectContact("Worked 2019 - 2023 at Foo").phone).toBe(false);
+  });
+
+  it("finds links cut by a line break", () => {
+    expect(findBrokenUrl("a@b.co | linkedin.com/in/alex-moreira-\nexample | github.com/alex")).toBe("linkedin.com/in/alex-moreira-");
+    expect(findBrokenUrl("Portfolio: https://www.site.dev/my_\nwork")).toBe("https://www.site.dev/my_");
+    expect(findBrokenUrl("a@b.co | linkedin.com/in/\njanedoe")).toBe("linkedin.com/in/");
+    // Complete links, hyphenated prose and a URL followed by a blank line are fine.
+    expect(findBrokenUrl("linkedin.com/in/jane-doe\nSummary")).toBeNull();
+    expect(findBrokenUrl("github.com/me/\nSummary")).toBeNull();
+    expect(findBrokenUrl("Worked on the front-\nend of the store")).toBeNull();
+    expect(findBrokenUrl("see site.dev/a-\n\nnext")).toBeNull();
+    expect(findBrokenUrl(RESUME_EN)).toBeNull();
   });
 
   it("is bounded on hostile input", () => {
@@ -392,6 +404,14 @@ describe("analyzeResume", () => {
     expect(result.findings.find((f) => f.id === "content.longBullets")?.params).toEqual({ count: 1, max: 35 });
     expect(result.findings.find((f) => f.id === "content.repeatedVerb")?.params).toEqual({ verb: "led", count: 5 });
     expect(result.categories.content!.score).toBe(clean.categories.content!.score);
+  });
+
+  it("penalizes a link cut by a line break", () => {
+    const clean = analyzeResume({ resumeText: RESUME_PT });
+    const result = analyzeResume({ resumeText: RESUME_PT.replace("linkedin.com/in/mariasilva", "linkedin.com/in/maria-\nsilva") });
+    expect(result.findings.find((f) => f.id === "contact.brokenUrl")).toMatchObject({ severity: "warning", params: { url: "linkedin.com/in/maria-" } });
+    expect(result.categories.contact!.score).toBe(clean.categories.contact!.score - 10);
+    expect(ids(clean)).not.toContain("contact.brokenUrl");
   });
 
   it("gives half credit to icon-prefixed headings", () => {

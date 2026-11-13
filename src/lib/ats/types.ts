@@ -41,6 +41,7 @@ export const FINDING_IDS = [
   "contact.linkedinHidden",
   "contact.linkedinMissing",
   "contact.personalData",
+  "contact.brokenUrl",
   "content.quantified",
   "content.quantifiedLow",
   "content.actionVerbs",
