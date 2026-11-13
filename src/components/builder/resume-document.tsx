@@ -1,4 +1,4 @@
-import type { ReactNode } from "react";
+import { Fragment, type ReactNode } from "react";
 import { displayUrl, formatMonth, formatRange, RESUME_HEADINGS } from "@/lib/resume/format";
 import { isValidEmail, toSafeUrl, type ResumeData } from "@/lib/resume/schema";
 
@@ -60,10 +60,11 @@ export function ResumeDocument({ resume, emptyHint }: { resume: ResumeData; empt
         {contact.length > 0 && (
           <p className="contact">
             {contact.map((node, i) => (
-              <span key={i}>
+              <Fragment key={i}>
                 {i > 0 && " | "}
-                {node}
-              </span>
+                {/* Each item wraps as a whole: a URL split across lines reaches the ATS incomplete. */}
+                <span className="contact-item">{node}</span>
+              </Fragment>
             ))}
           </p>
         )}

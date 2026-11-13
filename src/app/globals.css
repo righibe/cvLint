@@ -947,6 +947,12 @@ fieldset.form-section > legend + * {
   font-size: 9.5pt;
 }
 
+.resume .contact-item {
+  display: inline-block;
+  max-width: 100%;
+  overflow-wrap: anywhere;
+}
+
 /* The paper is always white, so links must not inherit the page accent. */
 .resume a {
   color: inherit;
