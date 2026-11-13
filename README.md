@@ -37,8 +37,12 @@ you what to fix, in plain rules you can read, not a black-box AI score.
   - standard sections (EN/PT), including headings hidden behind icon glyphs ("l EXPERIENCE")
   - contact data written as text (email, phone, LinkedIn URL vs. a hidden link)
   - content signals: metrics, action verbs (EN/PT, STAR-style too), bullets, dates
+  - wording tips: duty and cliché phrases ("responsible for", "team player", "responsável por"), bullets that run
+    too long and the same verb opening line after line
+  - unnecessary personal data (CPF, RG, date of birth, age, marital status), flagged as a privacy risk
   - keyword match against a job description, with a bilingual skill dictionary and case-aware matching for ambiguous
     words ("Excel" vs "excel at", "React" vs "React Native")
+  - one click to copy the whole report as Markdown
 - **Resume builder**: form → single-column, text-based, ATS-friendly resume. Two templates, EN/PT headings,
   print to PDF, JSON export, import of cvlint or [JSON Resume](https://jsonresume.org) files, autosave to `localStorage`.
 
@@ -57,6 +61,9 @@ Rule-based and transparent (see [`src/lib/ats/analyze.ts`](src/lib/ats/analyze.t
 | Sections     | 15%      | 25%         |
 | Content      | 15%      | 25%         |
 | Contact      | 10%      | 15%         |
+
+Some findings are advice only and never move the score (personal data, long bullets, repeated verbs). Weak wording
+costs 5 content points once it shows up three times.
 
 It is an estimate of common ATS parsing problems, not a prediction of any specific vendor.
 
@@ -142,6 +149,8 @@ extrai e diz o que corrigir, com regras que você pode ler, não uma nota de cai
 - **Verificador ATS**: envie PDF, DOCX ou TXT (ou cole o texto) e veja o texto exato que o ATS extrai, problemas de
   layout (tabelas, caixas de texto, colunas, fontes de ícones, contatos no cabeçalho), seções padrão, contatos,
   métricas, verbos de ação, datas e a comparação de palavras-chave com a vaga, com dicionário bilíngue de habilidades.
+  Também aponta frases fracas e clichês ("responsável por", "proativo"), bullets longos demais, verbo repetido e dados
+  pessoais desnecessários (CPF, RG, data de nascimento, idade, estado civil). O relatório pode ser copiado em Markdown.
 - **Gerador de currículo**: formulário → currículo de coluna única, baseado em texto e amigável para ATS. Dois modelos,
   títulos em PT/EN, impressão em PDF, exportação JSON, importação de cvlint ou JSON Resume, salvamento automático local.
 
