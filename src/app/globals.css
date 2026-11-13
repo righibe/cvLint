@@ -982,13 +982,26 @@ fieldset.form-section > legend + * {
   color: #444444;
 }
 
+/*
+ * Browsers draw list markers as shapes, which never reach the PDF text, so the bullet
+ * is a real "•" character in the text flow: an ATS (and cvlint) reads "• Built…".
+ */
 .resume ul {
   margin: 4px 0 0;
   padding-left: 18px;
+  list-style: none;
 }
 
 .resume li {
   margin: 2px 0;
+  text-indent: -12px;
+}
+
+.resume li::before {
+  content: "•";
+  display: inline-block;
+  width: 12px;
+  text-indent: 0;
 }
 
 .resume p {
