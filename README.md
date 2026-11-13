@@ -35,7 +35,7 @@ you what to fix, in plain rules you can read, not a black-box AI score.
   - the exact text an ATS extracts ("What the ATS reads")
   - layout problems: tables, text boxes, multi-column layouts, icon fonts, contact info in headers/footers, page count
   - standard sections (EN/PT), including headings hidden behind icon glyphs ("l EXPERIENCE")
-  - contact data written as text (email, phone, LinkedIn URL vs. a hidden link)
+  - contact data written as text (email, phone, LinkedIn URL vs. a hidden link), and links cut by a line break
   - content signals: metrics, action verbs (EN/PT, STAR-style too), bullets, dates
   - wording tips: duty and cliché phrases ("responsible for", "team player", "responsável por"), bullets that run
     too long and the same verb opening line after line
@@ -61,6 +61,13 @@ Rule-based and transparent (see [`src/lib/ats/analyze.ts`](src/lib/ats/analyze.t
 | Sections     | 15%      | 25%         |
 | Content      | 15%      | 25%         |
 | Contact      | 10%      | 15%         |
+
+Inside each category the rules look at substance, not only at keywords on the page:
+
+- a section only counts when there is text under its heading
+- dates only earn full credit when the experience section states a period ("Mar 2021 – Present", "since 2019")
+- the expected number of lines with metrics (30% of the bullets) and action verbs (60%) grows with the resume
+- a link cut in two by a line break costs contact points
 
 Some findings are advice only and never move the score (personal data, long bullets, repeated verbs). Weak wording
 costs 5 content points once it shows up three times.
@@ -151,6 +158,8 @@ extrai e diz o que corrigir, com regras que você pode ler, não uma nota de cai
   métricas, verbos de ação, datas e a comparação de palavras-chave com a vaga, com dicionário bilíngue de habilidades.
   Também aponta frases fracas e clichês ("responsável por", "proativo"), bullets longos demais, verbo repetido e dados
   pessoais desnecessários (CPF, RG, data de nascimento, idade, estado civil). O relatório pode ser copiado em Markdown.
+  A nota olha o conteúdo, não só o título: seção vazia não pontua, datas precisam de período na experiência e a meta
+  de métricas e verbos de ação cresce com o tamanho do currículo.
 - **Gerador de currículo**: formulário → currículo de coluna única, baseado em texto e amigável para ATS. Dois modelos,
   títulos em PT/EN, impressão em PDF, exportação JSON, importação de cvlint ou JSON Resume, salvamento automático local.
 
