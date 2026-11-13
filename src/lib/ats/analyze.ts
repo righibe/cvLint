@@ -1,7 +1,7 @@
 import { RESUME_HEADINGS } from "../resume/format";
 import { normalizeText } from "../text/normalize";
 import { detectContact, findBrokenUrl } from "./contact";
-import { analyzeContent, countDateRanges, MAX_BULLET_WORDS } from "./content";
+import { analyzeContent, countDateRanges, isBulletLine, MAX_BULLET_WORDS } from "./content";
 import { detectPersonalData } from "./personal";
 import { extractJobKeywords, indexText, matchKeywords } from "./keywords";
 import { detectLanguage } from "./language";
@@ -46,6 +46,9 @@ const MIN_READABLE_WORDS = 10;
 const MAX_JOB_CHARS = 20_000;
 export const WEAK_PHRASES_PENALTY_FROM = 3;
 export const REPEATED_VERB_FROM = 4;
+/** Share of the bullets expected to carry a number / to open with an action verb. */
+export const QUANTIFIED_SHARE = 0.3;
+export const ACTION_VERB_SHARE = 0.6;
 const SEVERITY_ORDER: Record<Severity, number> = { critical: 0, warning: 1, info: 2, pass: 3 };
 
 const clamp = (n: number) => Math.max(0, Math.min(100, Math.round(n)));
@@ -182,13 +185,23 @@ export function analyzeResume(input: AnalysisInput): AnalysisResult {
 
   // ---- Content ------------------------------------------------------------------
   let contentScore = 0;
-  contentScore += Math.min(content.quantified / 3, 1) * 35;
-  if (content.quantified >= 3) findings.add("content", "content.quantified", "pass", { count: content.quantified });
-  else findings.add("content", "content.quantifiedLow", "warning", { count: content.quantified });
+  // The targets grow with the resume: 3 lines with numbers are plenty among 6 bullets,
+  // not among 25. The minimums (3 and 5) apply to short resumes and to text without bullets.
+  // Only experience and project bullets describe work; skill or language lists do not count.
+  const lines = text.split("\n");
+  const work = sections.spans.filter((s) => s.section === "experience" || s.section === "projects");
+  const workBullets =
+    work.length > 0 ? work.flatMap((s) => lines.slice(s.start, s.end)).filter(isBulletLine).length : content.bullets;
+  const quantifiedTarget = Math.max(3, Math.ceil(workBullets * QUANTIFIED_SHARE));
+  const verbTarget = Math.max(5, Math.ceil(workBullets * ACTION_VERB_SHARE));
 
-  contentScore += Math.min(content.actionVerbs / 5, 1) * 25;
-  if (content.actionVerbs >= 5) findings.add("content", "content.actionVerbs", "pass", { count: content.actionVerbs });
-  else findings.add("content", "content.actionVerbsLow", "info", { count: content.actionVerbs });
+  contentScore += Math.min(content.quantified / quantifiedTarget, 1) * 35;
+  if (content.quantified >= quantifiedTarget) findings.add("content", "content.quantified", "pass", { count: content.quantified });
+  else findings.add("content", "content.quantifiedLow", "warning", { count: content.quantified, target: quantifiedTarget });
+
+  contentScore += Math.min(content.actionVerbs / verbTarget, 1) * 25;
+  if (content.actionVerbs >= verbTarget) findings.add("content", "content.actionVerbs", "pass", { count: content.actionVerbs });
+  else findings.add("content", "content.actionVerbsLow", "info", { count: content.actionVerbs, target: verbTarget });
 
   if (content.bullets >= 3) {
     contentScore += 15;
@@ -199,7 +212,6 @@ export function analyzeResume(input: AnalysisInput): AnalysisResult {
 
   // An ATS computes tenure from the period of each role, so loose years are not enough:
   // the experience section (or the whole text, when it has no such heading) needs ranges.
-  const lines = text.split("\n");
   const experience = sections.spans.filter((s) => s.section === "experience");
   const dated = experience.length > 0 ? experience.flatMap((s) => lines.slice(s.start, s.end)) : lines;
   if (countDateRanges(dated) > 0) {

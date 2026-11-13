@@ -44,10 +44,11 @@ const findings: Record<FindingId, string> = {
   "contact.personalData":
     "Dados pessoais desnecessários encontrados: {items}. O recrutador não precisa deles, abrem espaço para viés e um currículo vazado pode ser usado em golpes. Remova.",
   "content.quantified": "{count} linhas têm números ou métricas. Ótimo, seus resultados são mensuráveis.",
-  "content.quantifiedLow": "Só {count} linha(s) têm números. Quantifique seu impacto (%, tempo economizado, usuários, receita).",
+  "content.quantifiedLow":
+    "Só {count} linha(s) têm números; um currículo desse tamanho deveria ter pelo menos {target}. Quantifique seu impacto (%, tempo economizado, usuários, receita).",
   "content.actionVerbs": "{count} linhas começam com verbos de ação fortes.",
   "content.actionVerbsLow":
-    "Só {count} linha(s) começam com verbos de ação (ex.: “Desenvolvi”, “Liderei”, “Reduzi”). Comece pelo que você fez.",
+    "Só {count} linha(s) começam com verbos de ação (ex.: “Desenvolvi”, “Liderei”, “Reduzi”); mire em pelo menos {target}. Comece pelo que você fez.",
   "content.bullets": "{count} tópicos (bullets) encontrados, o que facilita a leitura.",
   "content.bulletsMissing": "Poucos ou nenhum tópico. Divida suas experiências em bullets curtos.",
   "content.datesMissing": "Nenhuma data encontrada. O ATS usa datas para calcular experiência; coloque mês/ano em cada cargo.",

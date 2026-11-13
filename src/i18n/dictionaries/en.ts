@@ -43,9 +43,11 @@ const findings: Record<FindingId, string> = {
   "contact.personalData":
     "Unnecessary personal data found: {items}. Recruiters do not need it, it invites bias and a leaked resume can be used for fraud. Remove it.",
   "content.quantified": "{count} lines include numbers or metrics. Great, your results are measurable.",
-  "content.quantifiedLow": "Only {count} line(s) include numbers. Quantify your impact (%, time saved, users, revenue).",
+  "content.quantifiedLow":
+    "Only {count} line(s) include numbers; a resume this size should have at least {target}. Quantify your impact (%, time saved, users, revenue).",
   "content.actionVerbs": "{count} lines start with strong action verbs.",
-  "content.actionVerbsLow": "Only {count} line(s) start with action verbs (e.g. “Built”, “Led”, “Reduced”). Lead with what you did.",
+  "content.actionVerbsLow":
+    "Only {count} line(s) start with action verbs (e.g. “Built”, “Led”, “Reduced”); aim for at least {target}. Lead with what you did.",
   "content.bullets": "{count} bullet points found, which makes it easy to scan.",
   "content.bulletsMissing": "Few or no bullet points. Break your experience into short bullets.",
   "content.datesMissing": "No dates found. ATS use dates to calculate experience, so add month/year to each role.",

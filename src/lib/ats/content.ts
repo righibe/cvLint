@@ -44,6 +44,10 @@ const DATE_RANGE =
   /(?:19[5-9]\d|20[0-4]\d)\s?(?:[-–—]|\s(?:to|a|ate)\s)\s?(?:(?:[a-z]{3,9}\.?\s(?:de\s)?|\d{1,2}[/.])?(?:19[5-9]\d|20[0-4]\d)|present|current|now|today|atual|hoje|presente|o momento|momento)|\b(?:since|desde)\s(?:[a-z]{3,9}\.?\s(?:de\s)?|\d{1,2}[/.])?(?:19[5-9]\d|20[0-4]\d)/;
 const MAX_DATE_LINE = 200;
 
+export function isBulletLine(line: string): boolean {
+  return BULLET.test(line.trim());
+}
+
 /** Lines that state a period (start and end, or "since"), which is what an ATS turns into tenure. */
 export function countDateRanges(lines: string[]): number {
   return lines.filter((line) => DATE_RANGE.test(fold(line.slice(0, MAX_DATE_LINE)))).length;

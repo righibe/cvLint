@@ -459,6 +459,26 @@ describe("analyzeResume", () => {
     expect(ids(analyzeResume({ resumeText: RESUME_EN.replace("Experience\n", "") }))).not.toContain("content.dateRangesMissing");
   });
 
+  it("asks for more metrics and action verbs as the resume grows", () => {
+    const clean = analyzeResume({ resumeText: RESUME_EN });
+    // 20 more bullets with no number and no verb: 3 metric lines are no longer enough.
+    const filler = Array.from({ length: 20 }, () => "• The team and the product area were mine").join("\n");
+    const padded = analyzeResume({ resumeText: RESUME_EN.replace("\n\nEducation", `\n${filler}\n\nEducation`) });
+    expect(ids(clean)).toEqual(expect.arrayContaining(["content.quantified", "content.actionVerbs"]));
+    expect(padded.stats.bullets).toBe(27);
+    expect(padded.findings.find((f) => f.id === "content.quantifiedLow")?.params).toMatchObject({ target: 9 });
+    expect(padded.findings.find((f) => f.id === "content.actionVerbsLow")?.params).toMatchObject({ target: 17 });
+    expect(padded.categories.content!.score).toBeLessThan(clean.categories.content!.score - 15);
+    // Bulleted skill lists are not work statements and do not raise the targets.
+    const listed = analyzeResume({ resumeText: `${RESUME_EN}\n${"• Tools: Docker, Git, Linux\n".repeat(20)}` });
+    expect(listed.stats.bullets).toBe(27);
+    expect(ids(listed)).toEqual(expect.arrayContaining(["content.quantified", "content.actionVerbs"]));
+    // Short resumes keep the old minimums.
+    const short = analyzeResume({ resumeText: "Some Person\nI am a developer and I like my work and I love my job.\n".repeat(8) });
+    expect(short.findings.find((f) => f.id === "content.quantifiedLow")?.params).toEqual({ count: 0, target: 3 });
+    expect(short.findings.find((f) => f.id === "content.actionVerbsLow")?.params).toEqual({ count: 0, target: 5 });
+  });
+
   it("gives half credit to icon-prefixed headings", () => {
     const iconized = RESUME_EN.replace("Experience\nSenior", "l EXPERIENCE\nSenior").replace("Skills\nPython", "Ô SKILLS\nPython");
     const clean = analyzeResume({ resumeText: RESUME_EN });
