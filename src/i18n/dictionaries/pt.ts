@@ -51,6 +51,8 @@ const findings: Record<FindingId, string> = {
   "content.bullets": "{count} tópicos (bullets) encontrados, o que facilita a leitura.",
   "content.bulletsMissing": "Poucos ou nenhum tópico. Divida suas experiências em bullets curtos.",
   "content.datesMissing": "Nenhuma data encontrada. O ATS usa datas para calcular experiência; coloque mês/ano em cada cargo.",
+  "content.dateRangesMissing":
+    "Há anos no texto, mas nenhum cargo da experiência tem início e fim (ex.: “03/2021 – Atual”). O ATS usa esses períodos para calcular quanto tempo você trabalhou.",
   "content.pronouns": "Pronomes em primeira pessoa aparecem {count} vezes. Currículos costumam omitir “I/my”.",
   "content.weakPhrases":
     "Expressões fracas ou genéricas usadas {count} vez(es): {phrases}. Diga o que você fez e o resultado, em vez de listar obrigações ou qualidades.",

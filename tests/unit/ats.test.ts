@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { analyzeResume, WEAK_PHRASES_PENALTY_FROM, WEIGHTS_WITH_JOB, WEIGHTS_WITHOUT_JOB } from "@/lib/ats/analyze";
 import { detectContact, findBrokenUrl, isPhoneCandidate } from "@/lib/ats/contact";
-import { analyzeContent } from "@/lib/ats/content";
+import { analyzeContent, countDateRanges } from "@/lib/ats/content";
 import { extractJobKeywords, indexText, matchKeywords } from "@/lib/ats/keywords";
 import { detectLanguage } from "@/lib/ats/language";
 import { detectPersonalData } from "@/lib/ats/personal";
@@ -267,6 +267,16 @@ describe("content", () => {
     expect(analyzeContent("no verbs here").topVerb).toBeNull();
   });
 
+  it("counts lines that state a period", () => {
+    const periods = [
+      "Jan 2021 – Present", "03/2020 – Atual", "Engineer at Acme, 2019-2024", "Analyst, Jan 2017-Dec 2018", "06/2020 – 02/2022",
+      "Dev | 2019 a 2021", "Março de 2019 até o momento", "Desde 2019", "Since Mar 2020", "2018 to 2020",
+    ];
+    expect(countDateRanges(periods)).toBe(periods.length);
+    expect(countDateRanges(["Graduated in 2017", "Founded in 2019, 2020 revenue of 3M", "AWS certified 05/2023"])).toBe(0);
+    expect(countDateRanges([`${"x".repeat(300)} 2019 - 2021`])).toBe(0);
+  });
+
   it("does not count years as metrics", () => {
     expect(analyzeContent("Worked at the company between 2019 and 2021").quantified).toBe(0);
   });
@@ -434,6 +444,19 @@ describe("analyzeResume", () => {
     expect(result.findings.find((f) => f.id === "sections.found")?.params).toEqual({ sections: "summary,experience,skills" });
     expect(result.categories.sections!.score).toBe(clean.categories.sections!.score - 20);
     expect(ids(clean)).not.toContain("sections.empty");
+  });
+
+  it("wants a period in the experience section, not just years somewhere", () => {
+    const clean = analyzeResume({ resumeText: RESUME_EN });
+    const undated = RESUME_EN.replace("Jan 2021 – Present\n", "").replace("Mar 2018 – Dec 2020\n", "");
+    const result = analyzeResume({ resumeText: undated });
+    // Education still says "2014 – 2017", which says nothing about the jobs.
+    expect(ids(result)).toContain("content.dateRangesMissing");
+    expect(ids(result)).not.toContain("content.datesMissing");
+    expect(result.categories.content!.score).toBe(clean.categories.content!.score - 15);
+    expect(ids(clean)).not.toContain("content.dateRangesMissing");
+    // Without an experience heading the whole text is searched.
+    expect(ids(analyzeResume({ resumeText: RESUME_EN.replace("Experience\n", "") }))).not.toContain("content.dateRangesMissing");
   });
 
   it("gives half credit to icon-prefixed headings", () => {

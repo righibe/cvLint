@@ -49,6 +49,8 @@ const findings: Record<FindingId, string> = {
   "content.bullets": "{count} bullet points found, which makes it easy to scan.",
   "content.bulletsMissing": "Few or no bullet points. Break your experience into short bullets.",
   "content.datesMissing": "No dates found. ATS use dates to calculate experience, so add month/year to each role.",
+  "content.dateRangesMissing":
+    "There are years in the text, but no role in your experience has a start and end (e.g. “Mar 2021 – Present”). ATS use those periods to calculate how long you worked.",
   "content.pronouns": "First-person pronouns used {count} times. Resumes usually leave out “I/my”.",
   "content.weakPhrases":
     "Weak or generic wording used {count} time(s): {phrases}. Say what you did and the result instead of listing duties or traits.",

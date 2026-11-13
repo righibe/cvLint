@@ -1,7 +1,7 @@
 import { RESUME_HEADINGS } from "../resume/format";
 import { normalizeText } from "../text/normalize";
 import { detectContact, findBrokenUrl } from "./contact";
-import { analyzeContent, MAX_BULLET_WORDS } from "./content";
+import { analyzeContent, countDateRanges, MAX_BULLET_WORDS } from "./content";
 import { detectPersonalData } from "./personal";
 import { extractJobKeywords, indexText, matchKeywords } from "./keywords";
 import { detectLanguage } from "./language";
@@ -197,8 +197,19 @@ export function analyzeResume(input: AnalysisInput): AnalysisResult {
     findings.add("content", "content.bulletsMissing", "info");
   }
 
-  if (content.years >= 2) contentScore += 25;
-  else findings.add("content", "content.datesMissing", "warning");
+  // An ATS computes tenure from the period of each role, so loose years are not enough:
+  // the experience section (or the whole text, when it has no such heading) needs ranges.
+  const lines = text.split("\n");
+  const experience = sections.spans.filter((s) => s.section === "experience");
+  const dated = experience.length > 0 ? experience.flatMap((s) => lines.slice(s.start, s.end)) : lines;
+  if (countDateRanges(dated) > 0) {
+    contentScore += 25;
+  } else if (content.years >= 2) {
+    contentScore += 10;
+    findings.add("content", "content.dateRangesMissing", "warning");
+  } else {
+    findings.add("content", "content.datesMissing", "warning");
+  }
 
   if (language.resume === "en" && content.firstPerson >= 4) {
     contentScore -= 10;
