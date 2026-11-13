@@ -164,6 +164,17 @@ describe("sections", () => {
     ]);
   });
 
+  it("reports headings with no text under them", () => {
+    const report = detectSections("Summary\nExperience\nDev at Acme, 2020 - 2022\nSkills\n• Languages: Python, SQL\n• Tools: Docker\nSobre mim\nEducation\n\nProjects");
+    expect(report.empty).toEqual(["summary", "education", "projects"]);
+    // An inline heading does not close the section it sits in.
+    expect(report.spans).toContainEqual({ section: "skills", start: 4, end: 6 });
+    expect(report.spans).toContainEqual({ section: "languages", start: 4, end: 5 });
+    expect(detectSections(RESUME_EN).empty).toEqual([]);
+    expect(detectSections(RESUME_PT).empty).toEqual([]);
+    expect(detectSections("Skills: Python, SQL").empty).toEqual([]);
+  });
+
   it("ignores long lines that merely contain a heading word", () => {
     expect(detectSections("I have experience with many things in my career so far").found).toEqual([]);
   });
@@ -412,6 +423,17 @@ describe("analyzeResume", () => {
     expect(result.findings.find((f) => f.id === "contact.brokenUrl")).toMatchObject({ severity: "warning", params: { url: "linkedin.com/in/maria-" } });
     expect(result.categories.contact!.score).toBe(clean.categories.contact!.score - 10);
     expect(ids(clean)).not.toContain("contact.brokenUrl");
+  });
+
+  it("gives no credit to an empty section", () => {
+    const clean = analyzeResume({ resumeText: RESUME_EN });
+    const hollow = RESUME_EN.replace(/Education\n.*\n/, "Education\n");
+    const result = analyzeResume({ resumeText: hollow });
+    expect(result.findings.find((f) => f.id === "sections.empty")?.params).toEqual({ section: "education" });
+    expect(ids(result)).not.toContain("sections.missing");
+    expect(result.findings.find((f) => f.id === "sections.found")?.params).toEqual({ sections: "summary,experience,skills" });
+    expect(result.categories.sections!.score).toBe(clean.categories.sections!.score - 20);
+    expect(ids(clean)).not.toContain("sections.empty");
   });
 
   it("gives half credit to icon-prefixed headings", () => {

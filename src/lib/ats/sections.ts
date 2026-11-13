@@ -6,7 +6,20 @@ export interface SectionReport {
   /** Found only after dropping a stray leading glyph (icon fonts: "l EXPERIENCE", "Ô SKILLS"). */
   decorated: { heading: string; section: SectionId }[];
   nonstandard: { heading: string; suggestion: SectionId }[];
+  /** Recognized headings with no text before the next heading. */
+  empty: SectionId[];
+  /** Lines [start, end) of the text filed under each recognized heading. */
+  spans: { section: SectionId; start: number; end: number }[];
 }
+
+interface HeadingLine {
+  line: number;
+  sections: SectionId[];
+  /** "Skills: Python, SQL": the content sits on the heading line itself. */
+  inline: boolean;
+}
+
+const HAS_TEXT = /[\p{L}\p{N}]/u;
 
 const SECTION_IDS = Object.keys(SECTION_SYNONYMS) as SectionId[];
 /** Bullet lines are headings only when they are exactly a heading ("— Skills —", not "• Projects delivered"). */
@@ -53,7 +66,10 @@ export function detectSections(text: string): SectionReport {
   const decorated: SectionReport["decorated"] = [];
   const nonstandard: SectionReport["nonstandard"] = [];
 
-  for (const line of text.split("\n")) {
+  const lines = text.split("\n");
+  const headings: HeadingLine[] = [];
+
+  lines.forEach((line, index) => {
     const trimmed = line.trim();
     const isBullet = BULLET_START.test(trimmed);
 
@@ -66,9 +82,11 @@ export function detectSections(text: string): SectionReport {
       const key = headingKey(candidate);
       if (!key) continue;
 
+      const inline = candidate !== trimmed && HAS_TEXT.test(trimmed.slice(candidate.length));
       const ids = sectionsOf(key, isBullet);
       if (ids.length > 0) {
         ids.forEach((id) => found.add(id));
+        headings.push({ line: index, sections: ids, inline });
         matched = true;
         break;
       }
@@ -78,17 +96,36 @@ export function detectSections(text: string): SectionReport {
       const decoratedIds = stripped ? sectionsOf(stripped, isBullet) : [];
       if (decoratedIds.length > 0) {
         decoratedIds.forEach((section) => decorated.push({ heading: trimmed, section }));
+        headings.push({ line: index, sections: decoratedIds, inline });
         matched = true;
         break;
       }
     }
-    if (matched) continue;
+    if (matched) return;
 
     const key = headingKey(trimmed);
     // Own keys only: a heading such as "Constructor" must not resolve to Object.prototype members.
     const suggestion = key && Object.hasOwn(NONSTANDARD_HEADINGS, key) ? NONSTANDARD_HEADINGS[key] : undefined;
-    if (suggestion && !nonstandard.some((n) => n.suggestion === suggestion)) {
-      nonstandard.push({ heading: trimmed, suggestion });
+    if (suggestion) {
+      // A creative heading still ends the section above it.
+      headings.push({ line: index, sections: [], inline: false });
+      if (!nonstandard.some((n) => n.suggestion === suggestion)) nonstandard.push({ heading: trimmed, suggestion });
+    }
+  });
+
+  // Text belongs to the last standalone heading above it. Inline headings ("Languages: English")
+  // keep their own line and do not close the section they sit in.
+  const blocks = headings.filter((h) => !h.inline);
+  const spans: SectionReport["spans"] = [];
+  const withText = new Set<SectionId>();
+  for (const heading of headings) {
+    const next = blocks.find((b) => b.line > heading.line);
+    const start = heading.inline ? heading.line : heading.line + 1;
+    const end = heading.inline ? heading.line + 1 : (next?.line ?? lines.length);
+    const hasText = heading.inline || lines.slice(start, end).some((l) => HAS_TEXT.test(l));
+    for (const section of heading.sections) {
+      spans.push({ section, start, end });
+      if (hasText) withText.add(section);
     }
   }
 
@@ -96,5 +133,7 @@ export function detectSections(text: string): SectionReport {
     found: SECTION_IDS.filter((id) => found.has(id)),
     decorated: decorated.filter((d, i) => !found.has(d.section) && decorated.findIndex((x) => x.section === d.section) === i),
     nonstandard: nonstandard.filter((n) => !found.has(n.suggestion)),
+    empty: SECTION_IDS.filter((id) => spans.some((s) => s.section === id) && !withText.has(id)),
+    spans,
   };
 }

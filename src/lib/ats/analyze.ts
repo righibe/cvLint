@@ -157,19 +157,22 @@ export function analyzeResume(input: AnalysisInput): AnalysisResult {
   // ---- Sections -----------------------------------------------------------------
   const sections = detectSections(text);
   // A heading hidden behind an icon glyph may or may not be recognized: half credit.
+  // A heading with nothing under it earns nothing: the ATS gets an empty section.
   const credit = (id: SectionId) =>
-    sections.found.includes(id) ? 1 : sections.decorated.some((d) => d.section === id) ? 0.5 : 0;
+    sections.empty.includes(id) ? 0 : sections.found.includes(id) ? 1 : sections.decorated.some((d) => d.section === id) ? 0.5 : 0;
   let sectionScore = 0;
-  if (sections.found.length > 0) findings.add("sections", "sections.found", "pass", { sections: sections.found.join(",") });
+  const filled = sections.found.filter((id) => !sections.empty.includes(id));
+  if (filled.length > 0) findings.add("sections", "sections.found", "pass", { sections: filled.join(",") });
+  for (const id of sections.empty) findings.add("sections", "sections.empty", "warning", { section: id });
   for (const d of sections.decorated) {
     findings.add("sections", "sections.decorated", "warning", { heading: d.heading.slice(0, 60), section: d.section });
   }
   for (const [id, points] of [["experience", 30], ["education", 20], ["skills", 25]] as const) {
     sectionScore += points * credit(id);
-    if (credit(id) === 0) findings.add("sections", "sections.missing", "warning", { section: id });
+    if (credit(id) === 0 && !sections.empty.includes(id)) findings.add("sections", "sections.missing", "warning", { section: id });
   }
   sectionScore += 15 * credit("summary");
-  if (credit("summary") === 0) findings.add("sections", "sections.summaryMissing", "info");
+  if (credit("summary") === 0 && !sections.empty.includes("summary")) findings.add("sections", "sections.summaryMissing", "info");
   sectionScore += 10 * Math.max(credit("projects"), credit("certifications"), credit("languages"));
   for (const n of sections.nonstandard) {
     // Suggest the heading in the resume's own language when it is known.

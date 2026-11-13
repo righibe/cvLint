@@ -25,6 +25,8 @@ const findings: Record<FindingId, string> = {
   "sections.decorated":
     "The heading “{heading}” starts with a stray character (probably an icon). An ATS may not recognize it as “{section}”. Remove icons from section headings.",
   "sections.missing": "Missing section: {section}. Use a standard heading so the ATS can map it.",
+  "sections.empty":
+    "The “{section}” heading has nothing under it, so the ATS records an empty section. Add the content right below the heading or remove it.",
   "sections.summaryMissing":
     "No summary section. A 2–3 line summary with your target role and core skills helps ATS and recruiters.",
   "sections.nonstandard": "The heading “{heading}” is not standard. Rename it to “{suggestion}” so the ATS recognizes it.",

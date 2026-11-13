@@ -31,6 +31,7 @@ export const FINDING_IDS = [
   "sections.found",
   "sections.decorated",
   "sections.missing",
+  "sections.empty",
   "sections.summaryMissing",
   "sections.nonstandard",
   "contact.email",

@@ -26,6 +26,8 @@ const findings: Record<FindingId, string> = {
   "sections.decorated":
     "O título “{heading}” começa com um caractere solto (provavelmente um ícone). O ATS pode não reconhecê-lo como “{section}”. Tire os ícones dos títulos de seção.",
   "sections.missing": "Seção ausente: {section}. Use um título padrão para o ATS conseguir mapeá-la.",
+  "sections.empty":
+    "O título “{section}” não tem nada embaixo, então o ATS registra uma seção vazia. Coloque o conteúdo logo abaixo do título ou remova-o.",
   "sections.summaryMissing":
     "Sem seção de resumo. Um resumo de 2–3 linhas com o cargo desejado e principais habilidades ajuda o ATS e o recrutador.",
   "sections.nonstandard": "O título “{heading}” não é padrão. Renomeie para “{suggestion}” para o ATS reconhecer.",
